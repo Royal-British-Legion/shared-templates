@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 @description('')
-param location string
+param location string = 'uksouth'
 @description('Storage Account type')
 @allowed([
   'Standard_LRS'
