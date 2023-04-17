@@ -5,14 +5,16 @@ inputs:
     description: 'Azure credentials'
     required: true
 runs:
-  using: "composite"
+  using: "composite"  
   steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Login to Azure
+      env:
+        AZURE_CREDENTIALS: ${{ inputs.AZURE_CREDENTIALS }}
       uses: azure/login@v1
       with:
-        creds: ${{ inputs.azure-credentials }}
+        creds: ${{ env.azure-credentials }}
     - name: Set Bicep config options
       run: |
         az config set bicep.use_binary_from_path=true
