@@ -1,0 +1,31 @@
+name: create-storage-account
+description: Creates a storage action
+inputs:
+  azure-credentials:
+    description: 'Azure credentials'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.azure-credentials }}
+    - name: Set Bicep config options
+      run: |
+        az config set bicep.use_binary_from_path=true
+      shell: bash
+    - name: Build Bicep Template
+      id: build
+      uses: Azure/bicep-build-action@v1.0.0
+      with:
+        bicepFilePath: ./bicep/main.bicep
+        outputFilePath: ./bicep/azuredeploy.json
+        
+    - name: Deploy Storage Account 
+      uses: azure/arm-deploy@v1
+      with:
+        scope: subscription
+        template: ./infrastructure/bicep/azuredeploy.json
