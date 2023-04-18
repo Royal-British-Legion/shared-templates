@@ -1,7 +1,5 @@
 name: Terraform Actions
-
 description: 'Performs Terraform Init, Plan, and Apply'
-
 inputs:
   unit:
     description: 'Unit to deployment is for'
@@ -18,8 +16,17 @@ inputs:
   path:
     description: 'Path to resources from calling workflow'
     required: true
-  azure-credentials:
-    description: 'Azure credentials'
+  AZURE_AD_CLIENT_ID:
+    description: 'Azure Client ID'
+    required: true
+  AZURE_AD_CLIENT_SECRET:
+    description: 'Azure Client ID'
+    required: true
+  AZURE_SUBSCRIPTION_ID:
+    description: 'Azure Client ID'
+    required: true
+  AZURE_AD_TENANT_ID:
+    description: 'Azure Client ID'
     required: true
 
 runs:
@@ -44,19 +51,31 @@ runs:
 
     - name: Terraform Init
       env:
-        AZURE_CREDENTIALS: ${{ inputs.azure-credentials }}
+        ARM_CLIENT_ID: ${{ inputs.AZURE_AD_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ inputs.AZURE_AD_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.AZURE_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ inputs.AZURE_AD_TENANT_ID }}
       run: "terraform init -backend-config='key=${{ inputs.unit }}/${{ inputs.environment }}/${{ inputs.resource }}.tfstate'"
       shell: bash
       working-directory: "./infrastructure/terraform/${{ inputs.resource }}"
 
     - name: Terraform Plan
+      env:
+        ARM_CLIENT_ID: ${{ inputs.AZURE_AD_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ inputs.AZURE_AD_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.AZURE_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ inputs.AZURE_AD_TENANT_ID }}
       id: plan
       run: "terraform plan -input=false -var-file=tfvars/${{ inputs.environment }}.tfvars --out=planfile"
       shell: bash
       working-directory: "./infrastructure/terraform/${{ inputs.resource }}"
 
     - name: Terraform Apply
-      if: ${{ github.event_name == 'push' }}
+      env:
+        ARM_CLIENT_ID: ${{ inputs.AZURE_AD_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ inputs.AZURE_AD_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.AZURE_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ inputs.AZURE_AD_TENANT_ID }}
       run: "terraform apply -auto-approve planfile"
       shell: bash
       working-directory: "./infrastructure/terraform/${{ inputs.resource }}"
