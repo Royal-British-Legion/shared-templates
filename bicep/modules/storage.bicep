@@ -7,7 +7,7 @@
 ])
 param skuName string = 'Standard_LRS'
 @description('')
-param location string
+param location string = 'uksouth'
 @description('')
 
 resource account 'Microsoft.Storage/storageAccounts@2021-06-01' = {
