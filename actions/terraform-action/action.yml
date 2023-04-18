@@ -18,6 +18,9 @@ inputs:
   path:
     description: 'Path to resources from calling workflow'
     required: true
+  azure-credentials:
+    description: 'Azure credentials'
+    required: true
 
 runs:
   using: 'composite'
@@ -35,6 +38,8 @@ runs:
         terraform_wrapper: false
 
     - name: Terraform Init
+      env:
+        AZURE_CREDENTIALS: ${{ inputs.AZURE_CREDENTIALS }}
       run: "terraform init -backend-config='key=${{ inputs.unit }}/${{ inputs.environment }}/${{ inputs.resource }}.tfstate'"
       shell: bash
       working-directory: "./infrastructure/terraform/${{ matrix.resource }}"
