@@ -27,9 +27,10 @@ runs:
     - name: Print contents of azuredeploy.json
       run: cat ./shared-templates/bicep/azuredeploy.json
       shell: bash 
-      
+
     - name: Deploy Storage Account 
       uses: azure/arm-deploy@v1
       with:
         scope: subscription
         template: ./shared-templates/bicep/azuredeploy.json
+        region: uksouth
