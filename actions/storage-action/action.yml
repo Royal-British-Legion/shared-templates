@@ -14,7 +14,7 @@ runs:
         AZURE_CREDENTIALS: ${{ inputs.azure-credentials }}
       uses: azure/login@v1
       with:
-        creds: ${{ env.azure-credentials }}
+        creds: ${{ inputs.azure-credentials }}
     - name: Set Bicep config options
       run: |
         az config set bicep.use_binary_from_path=true
