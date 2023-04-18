@@ -7,8 +7,8 @@ inputs:
 runs:
   using: "composite"  
   steps:
-    # - name: Checkout code
-    #   uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
     - name: Login to Azure
       env:
         AZURE_CREDENTIALS: ${{ inputs.azure-credentials }}
