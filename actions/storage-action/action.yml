@@ -23,7 +23,11 @@ runs:
       with:
         bicepFilePath: ./shared-templates/bicep/main.bicep
         outputFilePath: ./shared-templates/bicep/azuredeploy.json
-        
+
+    - name: Print contents of azuredeploy.json
+      run: cat ./shared-templates/bicep/azuredeploy.json
+      shell: bash 
+      
     - name: Deploy Storage Account 
       uses: azure/arm-deploy@v1
       with:
