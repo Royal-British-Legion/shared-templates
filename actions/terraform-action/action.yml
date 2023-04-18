@@ -44,10 +44,10 @@ runs:
 
     - name: Terraform Init
       env:
-        AZURE_CREDENTIALS: ${{ inputs.AZURE_CREDENTIALS }}
+        AZURE_CREDENTIALS: ${{ inputs.azure-credentials }}
       run: "terraform init -backend-config='key=${{ inputs.unit }}/${{ inputs.environment }}/${{ inputs.resource }}.tfstate'"
       shell: bash
-      working-directory: "./infrastructure/terraform/${{ matrix.resource }}"
+      working-directory: "./infrastructure/terraform/${{ inputs.resource }}"
 
     - name: Terraform Plan
       id: plan
