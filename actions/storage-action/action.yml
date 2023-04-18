@@ -21,11 +21,11 @@ runs:
       id: build
       uses: Azure/bicep-build-action@v1.0.0
       with:
-        bicepFilePath: ./bicep/main.bicep
-        outputFilePath: ./bicep/azuredeploy.json
+        bicepFilePath: ./shared-templates/bicep/main.bicep
+        outputFilePath: ./shared-templates/bicep/azuredeploy.json
         
     - name: Deploy Storage Account 
       uses: azure/arm-deploy@v1
       with:
         scope: subscription
-        template: ./infrastructure/bicep/azuredeploy.json
+        template: ./shared-templates/bicep/azuredeploy.json
