@@ -37,16 +37,16 @@ runs:
     - name: Terraform Init
       run: "terraform init -backend-config='key=${{ inputs.unit }}/${{ inputs.environment }}/${{ inputs.resource }}.tfstate'"
       shell: bash
-      working-directory: "/infrastructure/terraform/${{ matrix.resource }}"
+      working-directory: "./infrastructure/terraform/${{ matrix.resource }}"
 
     - name: Terraform Plan
       id: plan
       run: "terraform plan -input=false -var-file=tfvars/${{ inputs.environment }}.tfvars --out=planfile"
       shell: bash
-      working-directory: "/infrastructure/terraform/${{ inputs.resource }}"
+      working-directory: "./infrastructure/terraform/${{ inputs.resource }}"
 
     - name: Terraform Apply
       if: ${{ github.event_name == 'push' }}
       run: "terraform apply -auto-approve planfile"
       shell: bash
-      working-directory: "/infrastructure/terraform/${{ inputs.resource }}"
+      working-directory: "./infrastructure/terraform/${{ inputs.resource }}"
