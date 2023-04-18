@@ -1,0 +1,40 @@
+name: Terraform Actions
+
+description: 'Performs Terraform Init, Plan, and Apply'
+
+inputs:
+  unit:
+    description: 'Unit to deployment is for'
+    required: true
+  environment:
+    description: 'Environment to deploy resources to'
+    required: true
+  resource:
+    description: 'Resource to deploy'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.4.1
+        terraform_wrapper: false
+
+    - name: Terraform Init
+      run: "terraform init -backend-config='key=${{ inputs.unit }}/${{ inputs.environment }}/${{ inputs.resource }}.tfstate'"
+      shell: bash
+      working-directory: "./infrastructure/terraform/${{ matrix.resource }}"
+
+    - name: Terraform Plan
+      id: plan
+      run: "terraform plan -input=false -var-file=tfvars/${{ inputs.environment }}.tfvars --out=planfile"
+      shell: bash
+      working-directory: "./infrastructure/terraform/${{ inputs.resource }}"
+
+    - name: Terraform Apply
+      if: ${{ github.event_name == 'push' }}
+      run: "terraform apply -auto-approve planfile"
+      shell: bash
+      working-directory: "./infrastructure/terraform/${{ inputs.resource }}"
