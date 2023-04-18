@@ -12,10 +12,22 @@ inputs:
   resource:
     description: 'Resource to deploy'
     required: true
+  repository:
+    description: 'Repository to checkout into'
+    required: true
+  path:
+    description: 'Path to resources from calling workflow'
+    required: true
 
 runs:
   using: 'composite'
   steps:
+    - name: Checkout my-terraform-app
+      uses: actions/checkout@v2
+      with:
+        repository: ${{ inputs.repository }}
+        ref: main
+        path: ${{ inputs.path }}
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
@@ -25,16 +37,16 @@ runs:
     - name: Terraform Init
       run: "terraform init -backend-config='key=${{ inputs.unit }}/${{ inputs.environment }}/${{ inputs.resource }}.tfstate'"
       shell: bash
-      working-directory: "./infrastructure/terraform/${{ matrix.resource }}"
+      working-directory: "/infrastructure/terraform/${{ matrix.resource }}"
 
     - name: Terraform Plan
       id: plan
       run: "terraform plan -input=false -var-file=tfvars/${{ inputs.environment }}.tfvars --out=planfile"
       shell: bash
-      working-directory: "./infrastructure/terraform/${{ inputs.resource }}"
+      working-directory: "/infrastructure/terraform/${{ inputs.resource }}"
 
     - name: Terraform Apply
       if: ${{ github.event_name == 'push' }}
       run: "terraform apply -auto-approve planfile"
       shell: bash
-      working-directory: "./infrastructure/terraform/${{ inputs.resource }}"
+      working-directory: "/infrastructure/terraform/${{ inputs.resource }}"
