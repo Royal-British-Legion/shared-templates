@@ -28,6 +28,9 @@ inputs:
   AZURE_AD_TENANT_ID:
     description: 'Azure Client ID'
     required: true
+  azure-credentials:
+    description: 'Azure credentials to use az cli'
+    required: true
 
 runs:
   using: 'composite'
